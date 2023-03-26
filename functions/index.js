@@ -226,7 +226,7 @@ export async function onRequest(context) {
           .join("") : 
           `<li class="wishlist-item">
           <span class="name">Geen lijstje gevonden.</span>
-          <span class="description">Waarschijnlijk is er iets mis. Of Martijn heeft al alles wat hij wilt.</span>`}
+          <span class="description">Waarschijnlijk is er iets mis. Of Martijn heeft al alles wat hij wil.</span>`}
         </ul>
     </main>
   </body>
