@@ -15,7 +15,7 @@ function sanitiseHtml(input) {
   return sanitisedInput;
 }
 
-function md(markdown) {
+function md(markdown, withParagraphs=false) {
   // Convert headers
   markdown = markdown.replace(/^#\s(.*)$/gm, "<h1>$1</h1>");
   markdown = markdown.replace(/^##\s(.*)$/gm, "<h2>$1</h2>");
@@ -36,6 +36,18 @@ function md(markdown) {
 
   // Convert links
   markdown = markdown.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2">$1</a>');
+
+  if (withParagraphs) {
+    // Convert paragraphs
+    var paragraphs = markdown.split(/\n\s*\n/);
+    for (var i = 0; i < paragraphs.length; i++) {
+      // Check whether the paragraph is already wrapped in a <p> tag
+      if (!/^<p>/.test(paragraphs[i])) {
+        paragraphs[i] = '<p>' + paragraphs[i] + '</p>';
+      }
+    }
+    markdown = paragraphs.join('\n');
+  }
 
   return markdown;
 }
@@ -73,6 +85,14 @@ export async function onRequest(context) {
     if (oldWishlist?.wishlist) wishlistItems = oldWishlist.wishlist;
   }
 
+  let introText = `<p>Hoi! 👋 Als je ooit inspiratie nodig hebt voor een cadeautje — kijk gerust hier.</p>
+  <p>Ik gebruik deze lijst ook voor mezelf, dus laat je niet afschrikken door sommige dingen hier met een hoog prijskaartje 😅.</p>
+  <p>Dingen die ik altijd leuk vind: gezelschapsspellen 🎲 (misschien staan er hier wel wat specifieke, maar je mag me altijd verrassen), lekker eten 🍣, chocolade / snoep 🍫, gadgets 📱, kookspullen 🍴, en verrassingen 🎁.</p>
+  <p>Oh en als laatste: de lijst staat helemaal niet in een bepaalde volgorde 🔀. Hoger in de lijst betekent zeker niet persé dat ik dat liever wil dan iets anders 😊</p>`;
+
+  try {
+    introText = md(sanitiseHtml(wishlistItems.filter(x => x.name.toLowerCase() === 'intro')[0].description), true);
+  } catch(e) {}
   const updateTimeFormatted = updateTime ? (`${updateTime.toLocaleDateString("nl", {day: "numeric", month: "long"})} om ${updateTime.getHours().toString().padStart(2, "0")}:${updateTime.getMinutes().toString().padStart(2, "0")} uur`) : '';
   const html = `<!DOCTYPE html>
   <html lang="nl">
@@ -213,12 +233,9 @@ export async function onRequest(context) {
                 (`<p class="alert">De lijst kon niet live worden geüpdatet.
                 ${updateTime ? `Deze versie is van ${updateTimeFormatted}.` : ''}</p>`)
         }
-        <p>Hoi! 👋 Als je ooit inspiratie nodig hebt voor een cadeautje — kijk gerust hier.</p>
-        <p>Ik gebruik deze lijst ook voor mezelf, dus laat je niet afschrikken door sommige dingen hier met een hoog prijskaartje 😅.</p>
-        <p>Dingen die ik altijd leuk vind: gezelschapsspellen 🎲 (misschien staan er hier wel wat specifieke, maar je mag me altijd verrassen), lekker eten 🍣, chocolade / snoep 🍫, gadgets 📱, kookspullen 🍴, en verrassingen 🎁.</p>
-        <p>Oh en als laatste: de lijst staat helemaal niet in een bepaalde volgorde 🔀. Hoger in de lijst betekent zeker niet persé dat ik dat liever wil dan iets anders 😊</p>
+        ${ introText }
         <ul class="wishlist">
-        ${wishlistItems.length ? wishlistItems
+        ${wishlistItems.length ? wishlistItems.filter(x => x.name.toLowerCase() !== 'intro')
           .map(
             (item) =>
               `<li class="wishlist-item">
