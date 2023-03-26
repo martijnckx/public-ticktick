@@ -189,7 +189,7 @@ export async function onRequest(context) {
         }
         <p>Hoi! 👋 Als je ooit inspiratie nodig hebt voor een cadeautje — kijk gerust hier.</p>
         <p>Ik gebruik deze lijst ook voor mezelf, dus laat je niet afschrikken door sommige dingen hier met een hoog prijskaartje 😅.</p>
-        <p>Dingen die ik altijd leuk vindt: gezelschapsspellen 🎲 (misschien staan er hier wel wat specifieke, maar je mag me altijd verrassen), lekker eten 🍣, chocolade / snoep 🍫, gadgets 📱, kookspullen 🍴, en verrassingen 🎁.</p>
+        <p>Dingen die ik altijd leuk vind: gezelschapsspellen 🎲 (misschien staan er hier wel wat specifieke, maar je mag me altijd verrassen), lekker eten 🍣, chocolade / snoep 🍫, gadgets 📱, kookspullen 🍴, en verrassingen 🎁.</p>
         <p>Oh en als laatste: de lijst staat helemaal niet in een bepaalde volgorde 🔀. Hoger in de lijst betekent zeker niet persé dat ik dat liever wil dan iets anders 😊</p>
         <ul class="wishlist">
         ${wishlistItems.length ? wishlistItems
