@@ -186,6 +186,9 @@ export async function onRequest(context) {
                 background: #ffffe015;
                 color: #ffff6c;
             }
+            a::before {
+              background: #3F51B5;
+            }
           }
       </style>
       <!-- Favicon -->
