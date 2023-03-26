@@ -135,6 +135,25 @@ export async function onRequest(context) {
           }
           a {
             color: inherit;
+            text-decoration: none;
+            position: relative;
+            display: inline-block;
+          }
+          a::before {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            z-index: -1;
+            background: #a3e2ff;
+            transition: all 0.3s ease-in-out;
+          }
+          a:hover::before {
+            bottom: 0;
+            border-radius: 5px;
+            height: 100%;
           }
           .wishlist {
             padding: 0;
