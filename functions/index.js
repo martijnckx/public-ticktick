@@ -61,7 +61,7 @@ export async function onRequest(context) {
       "https://api.ticktick.com/api/v2/batch/check/0",
       {
         headers: {
-          Cookie: context.env.TICKTICK_COOKIE,
+          Cookie: `t=${context.env.TICKTICK_TOKEN};`,
         },
       }
     );
@@ -72,7 +72,9 @@ export async function onRequest(context) {
     wishlistItems = wishlistItems.map((x) => ({
       name: x.title,
       description: x.content,
-    }));
+      sortOrder: x.sortOrder,
+    })).sort((x,y)=>(x.sortOrder-y.sortOrder));
+    console.log(wishlistItems);
     await context.env.WISHLIST.put('martijn', JSON.stringify({
         date: (new Date()),
         wishlist: wishlistItems,
