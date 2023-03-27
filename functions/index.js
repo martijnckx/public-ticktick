@@ -15,7 +15,7 @@ function sanitiseHtml(input) {
   return sanitisedInput;
 }
 
-function md(markdown, withParagraphs=false) {
+function md(markdown, withParagraphs = false) {
   // Convert headers
   markdown = markdown.replace(/^#\s(.*)$/gm, "<h1>$1</h1>");
   markdown = markdown.replace(/^##\s(.*)$/gm, "<h2>$1</h2>");
@@ -24,7 +24,10 @@ function md(markdown, withParagraphs=false) {
   // Convert bold and italic text
   markdown = markdown.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
   markdown = markdown.replace(/\*(.*?)\*/g, "<em>$1</em>");
-  markdown = markdown.replace(/\~(.*?)\~/g, "<span style=\"text-decoration: underline\">$1</span>");
+  markdown = markdown.replace(
+    /\~(.*?)\~/g,
+    '<span style="text-decoration: underline">$1</span>'
+  );
 
   // Convert lists
   markdown = markdown.replace(/^\-\s(.*)$/gm, "<ul><li>$1</li></ul>\n");
@@ -43,25 +46,23 @@ function md(markdown, withParagraphs=false) {
     for (var i = 0; i < paragraphs.length; i++) {
       // Check whether the paragraph is already wrapped in a <p> tag
       if (!/^<p>/.test(paragraphs[i])) {
-        paragraphs[i] = '<p>' + paragraphs[i] + '</p>';
+        paragraphs[i] = "<p>" + paragraphs[i] + "</p>";
       }
     }
-    markdown = paragraphs.join('\n');
+    markdown = paragraphs.join("\n");
   }
 
   return markdown;
 }
 
-export async function onRequest(context) {
+async function getTickTickItems(context, token) {
   let wishlistItems = [];
-  let updateTime = null;
-  let liveUpdate = false;
   try {
     const response = await fetch(
       "https://api.ticktick.com/api/v2/batch/check/0",
       {
         headers: {
-          Cookie: `t=${context.env.TICKTICK_TOKEN};`,
+          Cookie: `t=${token};`,
         },
       }
     );
@@ -69,22 +70,82 @@ export async function onRequest(context) {
     wishlistItems = data["syncTaskBean"]["update"].filter(
       (x) => x.projectId === "6234a9aed14ad17eaad2a118"
     );
-    wishlistItems = wishlistItems.map((x) => ({
-      name: x.title,
-      description: x.content,
-      sortOrder: x.sortOrder,
-    })).sort((x,y)=>(x.sortOrder-y.sortOrder));
-    console.log(wishlistItems);
-    await context.env.WISHLIST.put('martijn', JSON.stringify({
-        date: (new Date()),
-        wishlist: wishlistItems,
-    }));
+    wishlistItems = wishlistItems
+      .map((x) => ({
+        name: x.title,
+        description: x.content,
+        sortOrder: x.sortOrder,
+      }))
+      .sort((x, y) => x.sortOrder - y.sortOrder);
 
+    await context.env.WISHLIST.put(
+      "martijn",
+      JSON.stringify({
+        date: new Date(),
+        wishlist: wishlistItems,
+      })
+    );
+  } catch (e) {
+    console.log(e);
+    throw new Error();
+  }
+
+  return wishlistItems;
+}
+
+async function getNewAccessToken(context) {
+  const response = await fetch(
+    "https://api.ticktick.com/api/v2/user/signon?wc=true&remember=true",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username: context.env.TICKTICK_USERNAME,
+        password: context.env.TICKTICK_PASSWORD,
+      }),
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch new access token");
+  }
+
+  const data = await response.json();
+  const newToken = data["token"];
+
+  // Store the new token in KV under 'martijn-token'
+  await context.env.WISHLIST.put("martijn-token", newToken);
+
+  return newToken;
+}
+
+export async function onRequest(context) {
+  let wishlistItems = [];
+  let updateTime = null;
+  let liveUpdate = false;
+  let token = await context.env.WISHLIST.get("martijn-token");
+  try {
+    console.log(`Trying with token from KV: ${token}`);
+    wishlistItems = await getTickTickItems(context, token);
     liveUpdate = true;
   } catch (e) {
-    const oldWishlist = await context.env.WISHLIST.get('martijn',  { type: "json" });
-    if (oldWishlist?.date) updateTime = new Date(oldWishlist.date);
-    if (oldWishlist?.wishlist) wishlistItems = oldWishlist.wishlist;
+    try {
+      console.log("Didn't work. Fetching new token.");
+      token = await getNewAccessToken(context);
+      console.log(token);
+      wishlistItems = await getTickTickItems(context, token);
+      liveUpdate = true;
+    } catch (e) {
+      console.log(e);
+      console.log("Still didn't work. Using items from cache.");
+      const oldWishlist = await context.env.WISHLIST.get("martijn", {
+        type: "json",
+      });
+      if (oldWishlist?.date) updateTime = new Date(oldWishlist.date);
+      if (oldWishlist?.wishlist) wishlistItems = oldWishlist.wishlist;
+    }
   }
 
   let introText = `<p>Hoi! 👋 Als je ooit inspiratie nodig hebt voor een cadeautje — kijk gerust hier.</p>
@@ -93,9 +154,23 @@ export async function onRequest(context) {
   <p>Oh en als laatste: de lijst staat helemaal niet in een bepaalde volgorde 🔀. Hoger in de lijst betekent zeker niet persé dat ik dat liever wil dan iets anders 😊</p>`;
 
   try {
-    introText = md(sanitiseHtml(wishlistItems.filter(x => x.name.toLowerCase() === 'intro')[0].description), true);
-  } catch(e) {}
-  const updateTimeFormatted = updateTime ? (`${updateTime.toLocaleDateString("nl", {day: "numeric", month: "long"})} om ${updateTime.getHours().toString().padStart(2, "0")}:${updateTime.getMinutes().toString().padStart(2, "0")} uur`) : '';
+    introText = md(
+      sanitiseHtml(
+        wishlistItems.filter((x) => x.name.toLowerCase() === "intro")[0]
+          .description
+      ),
+      true
+    );
+  } catch (e) {}
+  const updateTimeFormatted = updateTime
+    ? `${updateTime.toLocaleDateString("nl", {
+        day: "numeric",
+        month: "long",
+      })} om ${updateTime.getHours().toString().padStart(2, "0")}:${updateTime
+        .getMinutes()
+        .toString()
+        .padStart(2, "0")} uur`
+    : "";
   const html = `<!DOCTYPE html>
   <html lang="nl">
   <head>
@@ -231,24 +306,38 @@ export async function onRequest(context) {
   <body>
     <main class="container">
         <h1>Martijns verlanglijst</h1>
-        ${liveUpdate ? '' :
-                (`<p class="alert">De lijst kon niet live worden geüpdatet.
-                ${updateTime ? `Deze versie is van ${updateTimeFormatted}.` : ''}</p>`)
+        ${
+          liveUpdate
+            ? ""
+            : `<p class="alert">De lijst kon niet live worden geüpdatet.
+                ${
+                  updateTime ? `Deze versie is van ${updateTimeFormatted}.` : ""
+                }</p>`
         }
-        ${ introText }
+        ${introText}
         <ul class="wishlist">
-        ${wishlistItems.length ? wishlistItems.filter(x => x.name.toLowerCase() !== 'intro')
-          .map(
-            (item) =>
-              `<li class="wishlist-item">
+        ${
+          wishlistItems.length
+            ? wishlistItems
+                .filter((x) => x.name.toLowerCase() !== "intro")
+                .map(
+                  (item) =>
+                    `<li class="wishlist-item">
                 <span class="name">${md(sanitiseHtml(item.name))}</span>
-                ${item.description.length ? `<span class="description">${md(sanitiseHtml(item.description))}</span>` : ""}
+                ${
+                  item.description.length
+                    ? `<span class="description">${md(
+                        sanitiseHtml(item.description)
+                      )}</span>`
+                    : ""
+                }
               </li>`
-          )
-          .join("") : 
-          `<li class="wishlist-item">
+                )
+                .join("")
+            : `<li class="wishlist-item">
           <span class="name">Geen lijstje gevonden.</span>
-          <span class="description">Waarschijnlijk is er iets mis. Of Martijn heeft al alles wat hij wil.</span>`}
+          <span class="description">Waarschijnlijk is er iets mis. Of Martijn heeft al alles wat hij wil.</span>`
+        }
         </ul>
     </main>
   </body>
