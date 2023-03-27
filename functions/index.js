@@ -127,19 +127,14 @@ export async function onRequest(context) {
   let liveUpdate = false;
   let token = await context.env.WISHLIST.get("martijn-token");
   try {
-    console.log(`Trying with token from KV: ${token}`);
     wishlistItems = await getTickTickItems(context, token);
     liveUpdate = true;
   } catch (e) {
     try {
-      console.log("Didn't work. Fetching new token.");
       token = await getNewAccessToken(context);
-      console.log(token);
       wishlistItems = await getTickTickItems(context, token);
       liveUpdate = true;
     } catch (e) {
-      console.log(e);
-      console.log("Still didn't work. Using items from cache.");
       const oldWishlist = await context.env.WISHLIST.get("martijn", {
         type: "json",
       });
