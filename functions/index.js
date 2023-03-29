@@ -56,7 +56,7 @@ function md(markdown, withParagraphs = false) {
 }
 
 async function getTickTickItems(context, token) {
-  let wishlistItems = [];
+  let listItems = [];
   try {
     const response = await fetch(
       "https://api.ticktick.com/api/v2/batch/check/0",
@@ -67,10 +67,12 @@ async function getTickTickItems(context, token) {
       }
     );
     const data = await response.json();
-    wishlistItems = data["syncTaskBean"]["update"].filter(
-      (x) => x.projectId === "6234a9aed14ad17eaad2a118"
+    const targetList = await context.env.WISHLIST.get('martijn-list');
+    if (!targetList) { return [] }
+    listItems = data["syncTaskBean"]["update"].filter(
+      (x) => x.projectId === (targetList)
     );
-    wishlistItems = wishlistItems
+    listItems = listItems
       .map((x) => ({
         name: x.title,
         description: x.content,
@@ -82,7 +84,7 @@ async function getTickTickItems(context, token) {
       "martijn",
       JSON.stringify({
         date: new Date(),
-        wishlist: wishlistItems,
+        list: listItems,
       })
     );
   } catch (e) {
@@ -90,7 +92,7 @@ async function getTickTickItems(context, token) {
     throw new Error();
   }
 
-  return wishlistItems;
+  return listItems;
 }
 
 async function getNewAccessToken(context) {
@@ -122,49 +124,53 @@ async function getNewAccessToken(context) {
 }
 
 export async function onRequest(context) {
-  let wishlistItems = [];
+  let listItems = [];
   let updateTime = null;
   let liveUpdate = false;
   let token = await context.env.WISHLIST.get("martijn-token");
   try {
-    wishlistItems = await getTickTickItems(context, token);
+    listItems = await getTickTickItems(context, token);
     liveUpdate = true;
   } catch (e) {
     try {
       token = await getNewAccessToken(context);
-      wishlistItems = await getTickTickItems(context, token);
+      listItems = await getTickTickItems(context, token);
       liveUpdate = true;
     } catch (e) {
-      const oldWishlist = await context.env.WISHLIST.get("martijn", {
+      const oldList = await context.env.WISHLIST.get("martijn", {
         type: "json",
       });
-      if (oldWishlist?.date) updateTime = new Date(oldWishlist.date);
-      if (oldWishlist?.wishlist) wishlistItems = oldWishlist.wishlist;
+      if (oldList?.date) updateTime = new Date(oldList.date);
+      if (oldList?.list) listItems = oldList.list;
     }
   }
 
-  let introText = `<p>Hoi! 👋 Als je ooit inspiratie nodig hebt voor een cadeautje — kijk gerust hier.</p>
-  <p>Ik gebruik deze lijst ook voor mezelf, dus laat je niet afschrikken door sommige dingen hier met een hoog prijskaartje 😅.</p>
-  <p>Dingen die ik altijd leuk vind: gezelschapsspellen 🎲 (misschien staan er hier wel wat specifieke, maar je mag me altijd verrassen), lekker eten 🍣, chocolade / snoep 🍫, gadgets 📱, kookspullen 🍴, en verrassingen 🎁.</p>
-  <p>Oh en als laatste: de lijst staat helemaal niet in een bepaalde volgorde 🔀. Hoger in de lijst betekent zeker niet persé dat ik dat liever wil dan iets anders 😊</p>`;
+  let title = "List from TickTick";
+  let introText = "";
 
   try {
     introText = md(
       sanitiseHtml(
-        wishlistItems.filter((x) => x.name.toLowerCase() === "intro")[0]
+        listItems.filter((x) => x.name.toLowerCase() === "ptt.intro")[0]
           .description
       ),
       true
     );
   } catch (e) {}
+  try {
+    title = sanitiseHtml(
+        listItems.filter((x) => x.name.toLowerCase() === "ptt.title")[0]
+          .description
+      );
+  } catch (e) {}
   const updateTimeFormatted = updateTime
-    ? `${updateTime.toLocaleDateString("nl", {
+    ? `${updateTime.toLocaleDateString("en", {
         day: "numeric",
         month: "long",
-      })} om ${updateTime.getHours().toString().padStart(2, "0")}:${updateTime
+      })} at ${updateTime.getHours().toString().padStart(2, "0")}:${updateTime
         .getMinutes()
         .toString()
-        .padStart(2, "0")} uur`
+        .padStart(2, "0")}`
     : "";
   const html = `<!DOCTYPE html>
   <html lang="nl">
@@ -172,7 +178,7 @@ export async function onRequest(context) {
       <meta charset="UTF-8">
       <meta http-equiv="X-UA-Compatible" content="IE=edge">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Martijns verlanglijst</title>
+      <title>${title}</title>
       <style>
           body,
           html {
@@ -287,34 +293,34 @@ export async function onRequest(context) {
       <link rel="apple-touch-icon" sizes="180x180" href="https://martijnluyckx.be/assets/images/png/apple-touch-icon.png">
       <link rel="icon" type="image/png" sizes="32x32" href="https://martijnluyckx.be/assets/images/png/favicon-32x32.png">
       <link rel="icon" type="image/png" sizes="16x16" href="https://martijnluyckx.be/assets/images/png/favicon-16x16.png">
-      <meta name="description" content="Wil je Martijn verrassen met een cadeau? Bekijk hier zijn verlanglijst.">
-      <meta name="twitter:title" content="Martijns verlanglijst">
-      <meta name="twitter:description" content="Wil je Martijn verrassen met een cadeau? Bekijk hier zijn verlanglijst.">
+      <meta name="description" content="${title}">
+      <meta name="twitter:title" content="${title}">
+      <meta name="twitter:description" content="${title}">
       <meta name="twitter:image" content="https://martijnluyckx.be/assets/images/png/og_image.png">
       <meta name="twitter:card" content="summary_large_image">
-      <meta property="og:title" content="Martijns verlanglijst">
-      <meta property="og:description" content="Wil je Martijn verrassen met een cadeau? Bekijk hier zijn verlanglijst.">
+      <meta property="og:title" content="${title}">
+      <meta property="og:description" content="${title}">
       <meta property="og:type" content="website">
       <meta property="og:image" content="https://martijnluyckx.be/assets/images/png/og_image.png">
       <meta property="og:url" content="https://verlanglijst.martijnluyckx.be/">
   </head>
   <body>
     <main class="container">
-        <h1>Martijns verlanglijst</h1>
+        <h1>${title}</h1>
         ${
           liveUpdate
             ? ""
-            : `<p class="alert">De lijst kon niet live worden geüpdatet.
+            : `<p class="alert">The list could not be updated just now.
                 ${
-                  updateTime ? `Deze versie is van ${updateTimeFormatted}.` : ""
+                  updateTime ? `The version you're seeing is from ${updateTimeFormatted}.` : ""
                 }</p>`
         }
         ${introText}
         <ul class="wishlist">
         ${
-          wishlistItems.length
-            ? wishlistItems
-                .filter((x) => x.name.toLowerCase() !== "intro")
+          listItems.length
+            ? listItems
+                .filter((x) => !["ptt.intro", "ptt.title"].includes(x.name.toLowerCase()))
                 .map(
                   (item) =>
                     `<li class="wishlist-item">
@@ -330,8 +336,8 @@ export async function onRequest(context) {
                 )
                 .join("")
             : `<li class="wishlist-item">
-          <span class="name">Geen lijstje gevonden.</span>
-          <span class="description">Waarschijnlijk is er iets mis. Of Martijn heeft al alles wat hij wil.</span>`
+          <span class="name">The TickTick list was not found, or is empty.</span>
+          <span class="description">Maybe something went wrong. Or the list is really just empty.</span>`
         }
         </ul>
     </main>
