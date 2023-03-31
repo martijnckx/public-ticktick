@@ -7,9 +7,14 @@ This repository allows you to publish one of your TickTick lists as a public web
 To install this repository, follow these steps:
 
 1. Deploy this repo on Cloudflare Pages.
-2. Set the environment variables `TICKTICK_USERNAME` and `TICKTICK_USERNAME`.
+    1. Download repo as zip
+    2. Extract the zip
+    3. New Cloudflare pages project from direct upload
+    4. Upload folder > select the folder you extracted (this readme should be at the root of that folder)
+2. Set the environment variables `TICKTICK_USERNAME` and `TICKTICK_USERNAME`. I suggest you select the 'encrypt' option as well so they are not readable from the dashboard after you set them.
 3. Create a Cloudflare Workers KV namespace (I suggest calling it `TICKTICK_LIST`).
 4. On your deployed Cloudflare Pages project, go to Settings > Functions > KV namespace bindings and add a production binding from your newly created KV namespace to the variable `TICKTICK_LIST` (it must be that name, it is case sensitive)
+5. Do the deployment again to apply the new environment settings (Deployments > New deployment > Same steps as #1)
 
 ## Usage
 
