@@ -36,3 +36,4 @@ To use this repository locally (outside of Cloudflare Pages), you can use Wrangl
 
 - This repository requires the environment variables `TICKTICK_USERNAME` and `TICKTICK_USERNAME` because the public TickTick API does not allow listing the lists and to-dos on your account. It is only meant to create to-dos (and read single to-dos that you already know the ID of, like the ones you created with the API).
 - Be aware that this repository exposes all the titles (but not the contents) of your lists on `/selectList`. Only the contents of the list you select and confirm with your TickTick credentials are shown on `/` (which is the point of this repository).
+- You will get an email from TickTick saying that "Someone signed in your account on unknown". That is this application. You should only get this email when the token expires and the application has to log in again. Online, I found estimates that a token should last about 4-6 months. 
