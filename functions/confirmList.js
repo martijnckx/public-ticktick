@@ -48,7 +48,7 @@ export async function onRequest(context) {
     ) {
       // verify credentials and save list id if they are correct
       if (body.username === context.env.TICKTICK_USERNAME && body.password === context.env.TICKTICK_PASSWORD) {
-        context.env.WISHLIST.put("list-id", selectedId);
+        context.env.TICKTICK_LIST.put("list-id", selectedId);
         htmlMainContent = `<h1>Success</h1><p>Your new list is now public</p><p><a href="/">View the public list</a></p>`
       } else {
         htmlMainContent = `<h1>Not allowed</h1><p>You are not allowed to change the list</p>`
