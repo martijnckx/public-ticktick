@@ -67,7 +67,7 @@ async function getTickTickItems(context, token) {
       }
     );
     const data = await response.json();
-    const targetList = await context.env.WISHLIST.get('martijn-list');
+    const targetList = await context.env.WISHLIST.get('list-id');
     if (!targetList) { return [] }
     listItems = data["syncTaskBean"]["update"].filter(
       (x) => x.projectId === (targetList)
@@ -81,7 +81,7 @@ async function getTickTickItems(context, token) {
       .sort((x, y) => x.sortOrder - y.sortOrder);
 
     await context.env.WISHLIST.put(
-      "martijn",
+      "ticktick-content",
       JSON.stringify({
         date: new Date(),
         list: listItems,
@@ -117,8 +117,7 @@ async function getNewAccessToken(context) {
   const data = await response.json();
   const newToken = data["token"];
 
-  // Store the new token in KV under 'martijn-token'
-  await context.env.WISHLIST.put("martijn-token", newToken);
+  await context.env.WISHLIST.put("ticktick-token", newToken);
 
   return newToken;
 }
@@ -127,7 +126,7 @@ export async function onRequest(context) {
   let listItems = [];
   let updateTime = null;
   let liveUpdate = false;
-  let token = await context.env.WISHLIST.get("martijn-token");
+  let token = await context.env.WISHLIST.get("ticktick-token");
   try {
     listItems = await getTickTickItems(context, token);
     liveUpdate = true;
@@ -137,7 +136,7 @@ export async function onRequest(context) {
       listItems = await getTickTickItems(context, token);
       liveUpdate = true;
     } catch (e) {
-      const oldList = await context.env.WISHLIST.get("martijn", {
+      const oldList = await context.env.WISHLIST.get("ticktick-content", {
         type: "json",
       });
       if (oldList?.date) updateTime = new Date(oldList.date);

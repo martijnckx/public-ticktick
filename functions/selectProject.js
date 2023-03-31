@@ -41,15 +41,15 @@ async function getNewAccessToken(context) {
   const data = await response.json();
   const newToken = data["token"];
 
-  // Store the new token in KV under 'martijn-token'
-  await context.env.WISHLIST.put("martijn-token", newToken);
+  // Store the new token in KV under 'ticktick-token'
+  await context.env.WISHLIST.put("ticktick-token", newToken);
 
   return newToken;
 }
 
 export async function onRequest(context) {
   let lists = [];
-  let token = await context.env.WISHLIST.get("martijn-token");
+  let token = await context.env.WISHLIST.get("ticktick-token");
   try {
     lists = await getTickTickLists(context, token);
     console.log("Got the lists");
