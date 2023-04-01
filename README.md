@@ -7,14 +7,15 @@ This repository allows you to publish one of your TickTick lists as a public web
 To install this repository, follow these steps:
 
 1. Deploy this repo on Cloudflare Pages.
-    1. Download repo as zip
-    2. Extract the zip
-    3. New Cloudflare pages project from direct upload
-    4. Upload folder > select the folder you extracted (this readme should be at the root of that folder)
-2. Set the environment variables `TICKTICK_USERNAME` and `TICKTICK_USERNAME`. I suggest you select the 'encrypt' option as well so they are not readable from the dashboard after you set them.
-3. Create a Cloudflare Workers KV namespace (I suggest calling it `TICKTICK_LIST`).
-4. On your deployed Cloudflare Pages project, go to Settings > Functions > KV namespace bindings and add a production binding from your newly created KV namespace to the variable `TICKTICK_LIST` (it must be that name, it is case sensitive)
-5. Do the deployment again to apply the new environment settings (Deployments > New deployment > Same steps as #1)
+    1. Install [Cloudflare Wrangler](https://developers.cloudflare.com/workers/wrangler/install-and-update/)
+    2. Download this repo as a zip & extract it
+    3. In a terminal, navigate to the extracted folder (this readme should be in the root of the resulting folder)
+    4. Run `wrangler pages publish .` and follow the prompts.
+    
+    5. Set the environment variables `TICKTICK_USERNAME` and `TICKTICK_USERNAME` on your [Pages project](https://dash.cloudflare.com). I suggest you select the 'encrypt' option as well so they are not readable from the dashboard after you set them.
+    6. Create a Cloudflare Workers KV namespace (I suggest calling it `TICKTICK_LIST`). On the Cloudflare dashboard go to Workers on the left navigation panel, click KV, and click Create Namespace.
+    7. On your deployed Cloudflare Pages project, go to Settings > Functions > KV namespace bindings and add a production binding from your newly created KV namespace to the variable `TICKTICK_LIST` (it must be that name, it is case sensitive)
+    8. Do the deployment again to apply the new environment settings (same steps as #4)
 
 ## Usage
 
@@ -22,7 +23,7 @@ To use this repository, follow these steps:
 
 1. Go to `/selectList`.
 2. Select the list you want to make public.
-3. Confirm with your TickTick credentials.
+3. Confirm with your TickTick credentials. _(So not everyone can view the contents of everything you have saved in TickTick 😉)_
 4. `/` now shows your list.
 
 ## Special properties
@@ -35,7 +36,7 @@ Here's an example of a TickTick list with settings:
 
 ## Local testing
 
-To use this repository locally (outside of Cloudflare Pages), you can use Wrangler, Cloudflares CLI. In a terminal that is navigated to the root of this repo, you can run `wrangler --compatibility-date=2022-11-28 pages dev . --kv=WISHLIST --binding TICKTICK_USERNAME="<your-ticktick-username>" --binding TICKTICK_PASSWORD="<your-ticktick-password>"` where you replace the placeholders with your TickTick credentials.
+To use this repository locally (outside of Cloudflare Pages), you can use Wrangler, Cloudflares CLI. In a terminal that is navigated to the root of this repo, you can run `wrangler --compatibility-date=2022-11-28 pages dev . --kv=TICKTICK_LIST --binding TICKTICK_USERNAME="<your-ticktick-username>" --binding TICKTICK_PASSWORD="<your-ticktick-password>"` where you replace the placeholders with your TickTick credentials.
 
 ## Notes
 
