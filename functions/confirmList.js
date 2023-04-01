@@ -193,13 +193,13 @@ export async function onRequest(context) {
         <link rel="apple-touch-icon" sizes="180x180" href="https://martijnluyckx.be/assets/images/png/apple-touch-icon.png">
         <link rel="icon" type="image/png" sizes="32x32" href="https://martijnluyckx.be/assets/images/png/favicon-32x32.png">
         <link rel="icon" type="image/png" sizes="16x16" href="https://martijnluyckx.be/assets/images/png/favicon-16x16.png">
-        <meta name="description" content="Wil je Martijn verrassen met een cadeau? Bekijk hier zijn verlanglijst.">
-        <meta name="twitter:title" content="Martijns verlanglijst">
-        <meta name="twitter:description" content="Wil je Martijn verrassen met een cadeau? Bekijk hier zijn verlanglijst.">
+        <meta name="description" content="Settings - PublicTickTick">
+        <meta name="twitter:title" content="Settings - PublicTickTick">
+        <meta name="twitter:description" content="Settings - PublicTickTick">
         <meta name="twitter:image" content="https://martijnluyckx.be/assets/images/png/og_image.png">
         <meta name="twitter:card" content="summary_large_image">
-        <meta property="og:title" content="Martijns verlanglijst">
-        <meta property="og:description" content="Wil je Martijn verrassen met een cadeau? Bekijk hier zijn verlanglijst.">
+        <meta property="og:title" content="Settings - PublicTickTick">
+        <meta property="og:description" content="Settings - PublicTickTick">
         <meta property="og:type" content="website">
         <meta property="og:image" content="https://martijnluyckx.be/assets/images/png/og_image.png">
         <meta property="og:url" content="https://verlanglijst.martijnluyckx.be/">
