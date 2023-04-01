@@ -190,19 +190,17 @@ export async function onRequest(context) {
             }
         </style>
         <!-- Favicon -->
-        <link rel="apple-touch-icon" sizes="180x180" href="https://martijnluyckx.be/assets/images/png/apple-touch-icon.png">
-        <link rel="icon" type="image/png" sizes="32x32" href="https://martijnluyckx.be/assets/images/png/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="https://martijnluyckx.be/assets/images/png/favicon-16x16.png">
+        <link rel="shortcut icon" href="//d107mjio2rjf74.cloudfront.net/web/static/img/favicon.ico"/><link rel="apple-touch-icon" sizes="60x60" href="//d107mjio2rjf74.cloudfront.net/web/static/img/apple-touch-icon-60x60.png"/><link rel="apple-touch-icon" sizes="76x76" href="//d107mjio2rjf74.cloudfront.net/web/static/img/apple-touch-icon-76x76.png"/><link rel="apple-touch-icon" sizes="120x120" href="//d107mjio2rjf74.cloudfront.net/web/static/img/apple-touch-icon-120x120.png"/><link rel="apple-touch-icon" sizes="152x152" href="//d107mjio2rjf74.cloudfront.net/web/static/img/apple-touch-icon-152x152.png"/><link rel="apple-touch-icon" sizes="180x180" href="//d107mjio2rjf74.cloudfront.net/web/static/img/apple-touch-icon-180x180.png"/><link rel="apple-touch-icon" href="//d107mjio2rjf74.cloudfront.net/web/static/img/apple-touch-icon.png"/>
         <meta name="description" content="Settings - PublicTickTick">
         <meta name="twitter:title" content="Settings - PublicTickTick">
         <meta name="twitter:description" content="Settings - PublicTickTick">
-        <meta name="twitter:image" content="https://martijnluyckx.be/assets/images/png/og_image.png">
+        <meta name="twitter:image" content="https://publicticktick.com/publicticktick-socialshare.png">
         <meta name="twitter:card" content="summary_large_image">
         <meta property="og:title" content="Settings - PublicTickTick">
         <meta property="og:description" content="Settings - PublicTickTick">
         <meta property="og:type" content="website">
-        <meta property="og:image" content="https://martijnluyckx.be/assets/images/png/og_image.png">
-        <meta property="og:url" content="https://verlanglijst.martijnluyckx.be/">
+        <meta property="og:image" content="https://publicticktick.com/publicticktick-socialshare.png">
+        <meta property="og:url" content="https://publicticktick.com/">
     </head>
     <body>
       <main class="container">
