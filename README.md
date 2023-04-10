@@ -6,16 +6,14 @@ This repository allows you to publish one of your TickTick lists as a public web
 
 To install this repository, follow these steps:
 
-1. Deploy this repo on Cloudflare Pages.
-2. Install [Cloudflare Wrangler](https://developers.cloudflare.com/workers/wrangler/install-and-update/)
-3. Download this repo as a zip & extract it
-4. In a terminal, navigate to the extracted folder (this readme should be in the root of the resulting folder)
-5. Run `wrangler pages publish .` and follow the prompts.
-
-6. Set the environment variables `TICKTICK_USERNAME` and `TICKTICK_USERNAME` on your [Pages project](https://dash.cloudflare.com). I suggest you select the 'encrypt' option as well so they are not readable from the dashboard after you set them.
-7. Create a Cloudflare Workers KV namespace (I suggest calling it `TICKTICK_LIST`). On the Cloudflare dashboard go to Workers on the left navigation panel, click KV, and click Create Namespace.
-8. On your deployed Cloudflare Pages project, go to Settings > Functions > KV namespace bindings and add a production binding from your newly created KV namespace to the variable `TICKTICK_LIST` (it must be that name, it is case sensitive)
-9. Do the deployment again to apply the new environment settings (same steps as #5)
+1. Install [Cloudflare Wrangler](https://developers.cloudflare.com/workers/wrangler/install-and-update/)
+2. Download this repo as a zip & extract it
+3. In a terminal, navigate to the extracted folder (this readme should be in the root of the resulting folder)
+4. Run `wrangler pages publish .` and follow the prompts.
+5. Set the environment variables `TICKTICK_USERNAME` and `TICKTICK_USERNAME` on your [Pages project](https://dash.cloudflare.com). I suggest you select the 'encrypt' option as well so they are not readable from the dashboard after you set them.
+6. Create a Cloudflare Workers KV namespace (I suggest calling it `TICKTICK_LIST`). On the Cloudflare dashboard go to Workers on the left navigation panel, click KV, and click Create Namespace.
+7. On your deployed Cloudflare Pages project, go to Settings > Functions > KV namespace bindings and add a production binding from your newly created KV namespace to the variable `TICKTICK_LIST` (it must be that name, it is case sensitive)
+8. Do the deployment again to apply the new environment settings (same steps as #4)
 
 ## Usage
 
