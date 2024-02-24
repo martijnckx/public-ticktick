@@ -10,7 +10,7 @@ To install this repository, follow these steps:
 2. Download this repo as a zip & extract it
 3. In a terminal, navigate to the extracted folder (this readme should be in the root of the resulting folder)
 4. Run `wrangler pages publish .` and follow the prompts.
-5. Set the environment variables `TICKTICK_USERNAME` and `TICKTICK_USERNAME` on your [Pages project](https://dash.cloudflare.com). I suggest you select the 'encrypt' option as well so they are not readable from the dashboard after you set them.
+5. Set the environment variables `TICKTICK_USERNAME` and `TICKTICK_PASSWORD` on your [Pages project](https://dash.cloudflare.com). I suggest you select the 'encrypt' option as well so they are not readable from the dashboard after you set them.
 6. Create a Cloudflare Workers KV namespace (I suggest calling it `TICKTICK_LIST`). On the Cloudflare dashboard go to Workers on the left navigation panel, click KV, and click Create Namespace.
 7. On your deployed Cloudflare Pages project, go to Settings > Functions > KV namespace bindings and add a production binding from your newly created KV namespace to the variable `TICKTICK_LIST` (it must be that name, it is case sensitive)
 8. Do the deployment again to apply the new environment settings (same steps as #4)
@@ -38,6 +38,6 @@ To use this repository locally (outside of Cloudflare Pages), you can use Wrangl
 
 ## Notes
 
-- This repository requires the environment variables `TICKTICK_USERNAME` and `TICKTICK_USERNAME` because the public TickTick API does not allow listing the lists and to-dos on your account. It is only meant to create to-dos (and read single to-dos that you already know the ID of, like the ones you created with the API).
+- This repository requires the environment variables `TICKTICK_USERNAME` and `TICKTICK_PASSWORD` because the public TickTick API does not allow listing the lists and to-dos on your account. It is only meant to create to-dos (and read single to-dos that you already know the ID of, like the ones you created with the API).
 - Be aware that this repository exposes all the titles (but not the contents) of your lists on `/selectList`. Only the contents of the list you select and confirm with your TickTick credentials are shown on `/` (which is the point of this repository).
 - You will get an email from TickTick saying that "Someone signed in your account on unknown". That is this application. You should only get this email when the token expires and the application has to log in again. Online, I found estimates that a token should last about 4-6 months. 
