@@ -32,6 +32,10 @@ Here's an example of a TickTick list with settings:
 
 ![Example TickTick list with settings](https://i.imgur.com/wZglKxl.png)
 
+## Hiding items
+
+If you don't want some specific items in your list to become public, prefix their title/name with `()`. They will not show up on the public website.
+
 ## Local testing
 
 To use this repository locally (outside of Cloudflare Pages), you can use Wrangler, Cloudflares CLI. In a terminal that is navigated to the root of this repo, you can run `wrangler --compatibility-date=2022-11-28 pages dev . --kv=TICKTICK_LIST --binding TICKTICK_USERNAME="<your-ticktick-username>" --binding TICKTICK_PASSWORD="<your-ticktick-password>"` where you replace the placeholders with your TickTick credentials.
