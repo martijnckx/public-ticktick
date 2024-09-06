@@ -249,6 +249,7 @@ export async function onRequest(context) {
           }
           .wishlist {
             padding: 0;
+            width: 100%;
           }
           .wishlist-item {
             list-style-type: none;
@@ -265,6 +266,7 @@ export async function onRequest(context) {
           }
           .wishlist-item .description {
             margin-top: 12px;
+            word-break: break-word;
           }
           @media (prefers-color-scheme: dark) {
             html, body {
