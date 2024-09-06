@@ -312,7 +312,7 @@ export async function onRequest(context) {
         ${
           listItems.length
             ? listItems
-                .filter((x) => !["ptt.intro", "ptt.title"].includes(x.name.toLowerCase()))
+                .filter((x) => !["ptt.intro", "ptt.title"].includes(x.name.toLowerCase()) && !x.name.toLowerCase().startsWith('()'))
                 .map(
                   (item) =>
                     `<li class="wishlist-item">
