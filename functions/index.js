@@ -74,7 +74,6 @@ async function getTickTickItems(context, token) {
         sortOrder: x.sortOrder,
       }))
       .sort((x, y) => x.sortOrder - y.sortOrder);
-
     await context.env.TICKTICK_LIST.put(
       "ticktick-content",
       JSON.stringify({
