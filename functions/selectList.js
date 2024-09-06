@@ -25,7 +25,33 @@ async function getNewAccessToken(context) {
     {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "accept": "*/*",
+        "accept-encoding": "gzip, deflate, br, zstd",
+        "accept-language": "en-GB,en-US;q=0.9,en;q=0.8,nl;q=0.7",
+        "content-type": "application/json",
+        "origin": "https://ticktick.com",
+        "priority": "u=1, i",
+        "referer": "https://ticktick.com/",
+        "sec-ch-ua": '"Chromium";v="128", "Not;A=Brand";v="24", "Google Chrome";v="128"',
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": '"macOS"',
+        "sec-fetch-dest": "empty",
+        "sec-fetch-mode": "cors",
+        "sec-fetch-site": "same-site",
+        "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
+        "x-csrftoken": "",
+        "x-device": JSON.stringify({
+          "platform": "web",
+          "os": "macOS 10.15.7",
+          "device": "Chrome 128.0.0.0",
+          "name": "",
+          "version": 6050,
+          "id": "66db620a8b9bde2f38ff8844",
+          "channel": "website",
+          "campaign": "",
+          "websocket": ""
+        }),
+        "x-requested-with": "XMLHttpRequest"
       },
       body: JSON.stringify({
         username: context.env.TICKTICK_USERNAME,
