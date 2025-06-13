@@ -6,6 +6,7 @@ async function getTickTickLists(context, token) {
       {
         headers: {
           Cookie: `t=${token};`,
+          'x-device': `{"platform":"","os":"","device":"","name":"","version":null,"id":"","channel":"website","campaign":"","websocket":""}`,
         },
       }
     );
@@ -40,17 +41,7 @@ async function getNewAccessToken(context) {
         "sec-fetch-site": "same-site",
         "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
         "x-csrftoken": "",
-        "x-device": JSON.stringify({
-          "platform": "web",
-          "os": "macOS 10.15.7",
-          "device": "Chrome 128.0.0.0",
-          "name": "",
-          "version": 6050,
-          "id": "66db620a8b9bde2f38ff8844",
-          "channel": "website",
-          "campaign": "",
-          "websocket": ""
-        }),
+        'x-device': `{"platform":"","os":"","device":"","name":"","version":null,"id":"","channel":"website","campaign":"","websocket":""}`,
         "x-requested-with": "XMLHttpRequest"
       },
       body: JSON.stringify({

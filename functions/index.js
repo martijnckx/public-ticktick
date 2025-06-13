@@ -58,6 +58,7 @@ async function getTickTickItems(context, token) {
       {
         headers: {
           Cookie: `t=${token};`,
+          'x-device': `{"platform":"","os":"","device":"","name":"","version":null,"id":"","channel":"website","campaign":"","websocket":""}`,
         },
       }
     );
